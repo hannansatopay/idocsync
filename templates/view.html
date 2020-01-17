@@ -1,0 +1,68 @@
+
+	<head>
+		<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static', filename='styles/quill.snow.css') }}">
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+		<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.5/clipboard.min.js"></script>
+
+		<style>
+	.btn:hover{
+	 		border-color: rgba(27, 31, 35, 0.5);
+	 		box-shadow:inset 0px 0px 5px rgba(0,0,0,.2);
+	    border-radius: 0.25em;
+			opacity: 1.0;
+	}
+	.btn{
+			position: absolute;
+	    right: 11px;
+	  	margin-top: 2px;
+		  cursor: pointer;
+	    background-color: #eee;
+	    background-image: linear-gradient(#fcfcfc,#eee);
+	    border: 1px solid #d5d5d5;
+	    border-radius: 3px;
+	    -webkit-user-select: none;
+	    -moz-user-select: none;
+	    -ms-user-select: none;
+	    user-select: none;
+	    -webkit-appearance: none;
+		  opacity: 0.7;
+	    height: 25px;
+	}
+</style>
+
+		<script type=text/javascript>
+		window.setInterval(function(){
+		  	$(function() {
+				$.post('/doc/{{id}}',
+				  function(data, status, jqXHR) {
+					if(jqXHR.status == 200){
+						  $("#result").html(data.result);
+							document.querySelectorAll('pre').forEach((block) => {
+								$('<button class="btn"><img width="13" src = "{{ url_for('static', filename='images/clippy.svg') }}"></button>').insertBefore(block);
+								hljs.highlightBlock(block);
+							});
+				  }
+				});
+				return false;
+			  });
+		}, 3000);
+
+		</script>
+	</head>
+
+	<body>
+		<p id="result"></p>
+	</body>
+
+	<script type="text/javascript">
+		(function(){
+		 new Clipboard('.btn', {
+			target: function(trigger) {
+					return trigger.nextElementSibling;
+			}
+		});
+		})();
+	</script>

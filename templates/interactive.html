@@ -1,0 +1,74 @@
+
+	<head>
+		<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static', filename='styles/quill.snow.css') }}">
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+		<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+		<script src="https://cdn.rawgit.com/kensnyder/quill-image-resize-module/3411c9a7/image-resize.min.js"></script>
+	</head>
+
+  <style>
+		#editor{
+			height: 90%!important;
+			overflow: visible!important;
+		}
+		#toolbar-container{
+			height: 10%!important;
+      padding-top: 4px!important;
+		}
+	</style>
+
+	<body>
+		<div id="toolbar-container">
+		<span class="ql-formats">
+		<button class="ql-header" value="1"></button>
+		<button class="ql-header" value="2"></button>
+		</span>
+		<span class="ql-formats">
+		<button class="ql-bold"></button>
+		<button class="ql-italic"></button>
+		</span>
+		<span class="ql-formats">
+		<button class="ql-list" value="ordered"></button>
+		<button class="ql-list" value="bullet"></button>
+		</span>
+		<span class="ql-formats">
+		<button class="ql-blockquote"></button>
+		<button class="ql-code-block"></button>
+		</span>
+		<span class="ql-formats">
+		<button class="ql-image"></button>
+		</span>
+		<span class="ql-formats">
+		<p>Hello World</p>
+		</span>
+		</div>
+
+		<div id="editor">
+		{{ data|safe }}
+		</div>
+	</body>
+
+	<script type=text/javascript>
+		hljs.initHighlightingOnLoad();
+		var quill = new Quill('#editor', {
+			modules: {
+				imageResize: {
+								displaySize: true
+							},
+				syntax: true,
+					toolbar: '#toolbar-container'
+				},
+					theme: 'snow'
+				});
+
+		quill.on('text-change', update);
+
+		function update() {
+			$.post('/update', {
+				"data": quill.root.innerHTML,
+				"id": {{ id|tojson }}
+			});
+		}
+	</script>
